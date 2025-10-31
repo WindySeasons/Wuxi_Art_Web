@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>无锡 · 虚实之间</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            void: '#0A0A0A',      // 深邃黑
+            silk: '#F8F5F0',      // 丝绸白
+            azure: '#165DFF',     // 琉璃蓝
+            cinnabar: '#E63946',  // 朱砂红
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['"Noto Serif SC"', 'serif'],
+          },
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-outline {
+        -webkit-text-stroke: 1px theme('colors.silk');
+        color: transparent;
+      }
+      .clip-polygon {
+        clip-path: polygon(0 0, 100% 15%, 100% 100%, 0 85%);
+      }
+      .blend-overlay {
+        mix-blend-mode: overlay;
+      }
+      .blend-difference {
+        mix-blend-mode: difference;
+      }
+      .perspective {
+        perspective: 1000px;
+      }
+      .preserve-3d {
+        transform-style: preserve-3d;
+      }
+      .rotate-y-hover {
+        transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .rotate-y-hover:hover {
+        transform: rotateY(5deg) scale(1.02);
+      }
+      .shrink-animation {
+        transform: scale(0.95) opacity(0.7);
+        transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 1s ease, transform 1s ease;
+      }
+    }
+  </style>
+  
+  <style>
+    @keyframes wipe {
+      0% { transform: scaleX(0); }
+      50% { transform: scaleX(1); }
+      100% { transform: scaleX(0); }
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+    
+    .transition-wipe {
+      animation: wipe 1s ease-in-out forwards;
+      transform-origin: center;
+    }
+    
+    .pulse-glow {
+      animation: pulse-glow 4s infinite;
+    }
+  </style>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&family=Noto+Serif+SC:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-void text-silk overflow-x-hidden">
+  <!-- 绝对极简导航 -->
+  <nav class="fixed top-0 left-0 w-full z-50 px-8 py-6 flex justify-end">
+    <div class="flex space-x-8 items-center">
+      <a href="#spots" class="text-silk/60 hover:text-silk text-sm tracking-[0.2em] transition-colors duration-700">
+        景
+      </a>
+      <a href="#about" class="text-silk/60 hover:text-silk text-sm tracking-[0.2em] transition-colors duration-700">
+        韵
+      </a>
+      <button class="w-10 h-10 border border-silk/30 rounded-full flex items-center justify-center hover:bg-silk/10 transition-all duration-500">
+        <i class="fa fa-search text-silk/60"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 震撼开场：时空叠印 -->
+  <header class="h-screen relative overflow-hidden">
+    <!-- 底层影像：传统江南 -->
+    <div class="absolute inset-0 z-0">
+      <img src="http://www.ytz.com.cn/static/upload/2021/08/20/202108208683.jpg" alt="无锡传统风貌" 
+           class="w-full h-full object-cover object-center opacity-60">
+      <div class="absolute inset-0 bg-gradient-to-r from-void via-void/70 to-transparent"></div>
+    </div>
+    
+    <!-- 上层动态元素：现代光影 -->
+    <div class="absolute inset-0 z-10 opacity-30 blend-overlay">
+      <div class="absolute top-1/4 left-1/3 w-96 h-96 rounded-full bg-azure blur-[150px] pulse-glow"></div>
+      <div class="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-cinnabar blur-[120px] pulse-glow" style="animation-delay: 1s"></div>
+    </div>
+    
+    <!-- 标题文字：虚实叠加 -->
+    <div class="relative z-20 h-full flex flex-col justify-center px-8 md:px-24">
+      <div class="max-w-4xl">
+        <p class="text-azure text-sm md:text-base tracking-[0.5em] mb-6 opacity-80">
+          太湖之滨 · 时空褶皱
+        </p>
+        <h1 class="text-[clamp(3rem,15vw,8rem)] font-black leading-none mb-4">
+          <span class="block transform -translate-x-2 md:-translate-x-4">无</span>
+          <span class="block transform translate-x-4 md:translate-x-8 text-outline">锡</span>
+        </h1>
+        <div class="w-32 h-1 bg-cinnabar my-8 transform translate-x-1 md:translate-x-2"></div>
+        <p class="text-silk/70 max-w-xl text-lg md:text-xl leading-relaxed ml-1 md:ml-2">
+          当水墨遇见霓虹，当古运河倒映玻璃幕墙，这座城市在虚实之间，诉说着千年的故事。
+        </p>
+      </div>
+    </div>
+    
+    <!-- 下滚提示：打破常规位置 -->
+    <div class="absolute bottom-12 right-12 z-20 transform rotate-90 origin-bottom-right">
+      <a href="#spots" class="text-silk/40 hover:text-silk text-sm tracking-[0.3em] transition-colors duration-500">
+        探索空间
+        <i class="fa fa-long-arrow-right ml-4"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- 景点展示：打破网格的非对称布局 -->
+  <section id="spots" class="py-32 relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-void to-transparent z-10"></div>
+    
+    <!-- 装饰性几何元素 -->
+    <div class="absolute top-1/3 left-0 w-64 h-64 border border-silk/5 transform -translate-x-1/2 rotate-45"></div>
+    <div class="absolute bottom-1/4 right-0 w-96 h-96 border border-azure/10 transform translate-x-1/3 -translate-y-1/3 rounded-full"></div>
+    
+    <div class="container mx-auto px-8 md:px-24 relative z-20">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-20">
+        <div>
+          <h2 class="text-[clamp(2rem,6vw,4rem)] font-bold leading-tight">
+            空间<span class="text-azure">.</span>记忆
+          </h2>
+          <p class="text-silk/50 mt-6 max-w-lg ml-1">
+            每个景点都是时间的切片，在这里，过去与现在折叠共存
+          </p>
+        </div>
+        <div class="mt-8 md:mt-0 w-24 h-1 bg-gradient-to-r from-azure to-transparent"></div>
+      </div>
+
+  <!-- 景点容器 -->
+  <div id="spotsLoadingState" class="text-silk/60 text-sm tracking-[0.3em] uppercase mb-8">正在加载景点数据…</div>
+  <div id="spotsErrorState" class="hidden text-red-300 text-xs md:text-sm tracking-[0.2em] uppercase mb-8"></div>
+  <div id="spots-container" data-fallback="true">
+        <!-- 非对称网格布局 - 第一组 -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+          <!-- 鼋头渚：跨列大尺寸 -->
+          <div class="md:col-span-8 perspective">
+            <div class="relative h-[500px] rotate-y-hover preserve-3d fade-in" data-spot-id="yuantouzhu">
+              <img src="https://picsum.photos/id/1037/1200/800" alt="鼋头渚" 
+                   class="w-full h-full object-cover clip-polygon">
+              <div class="absolute inset-0 bg-gradient-to-t from-void via-void/40 to-transparent"></div>
+              <div class="absolute bottom-0 left-0 p-8">
+                <span class="text-xs text-azure tracking-widest">自然奇观</span>
+                <h3 class="text-3xl md:text-4xl font-bold mt-2">鼋头渚</h3>
+                <p class="text-silk/60 mt-4 max-w-md">
+                  樱花漫过湖面时，时间会慢下来，与1916年的那片花海重叠
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 灵山大佛：小尺寸 -->
+          <div class="md:col-span-4 perspective">
+            <div class="relative h-[500px] rotate-y-hover preserve-3d fade-in" style="transition-delay: 200ms" data-spot-id="lingshandafu">
+              <img src="https://picsum.photos/id/1038/800/1200" alt="灵山大佛" 
+                   class="w-full h-full object-cover clip-polygon">
+              <div class="absolute inset-0 bg-gradient-to-t from-void via-void/60 to-transparent"></div>
+              <div class="absolute bottom-0 left-0 p-8">
+                <span class="text-xs text-cinnabar tracking-widest">精神地标</span>
+                <h3 class="text-2xl md:text-3xl font-bold mt-2">灵山大佛</h3>
+                <p class="text-silk/60 mt-4 text-sm">
+                  79米高的青铜佛像，在数字时代依然守护着心灵的宁静
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 南长街：中等尺寸 -->
+          <div class="md:col-span-5 perspective">
+            <div class="relative h-[400px] rotate-y-hover preserve-3d fade-in" style="transition-delay: 400ms" data-spot-id="nanchangjie">
+              <img src="https://picsum.photos/id/1039/800/600" alt="南长街" 
+                   class="w-full h-full object-cover clip-polygon">
+              <div class="absolute inset-0 bg-gradient-to-t from-void via-void/50 to-transparent"></div>
+              <div class="absolute bottom-0 left-0 p-8">
+                <span class="text-xs text-azure tracking-widest">历史街区</span>
+                <h3 class="text-2xl font-bold mt-2">南长街</h3>
+                <p class="text-silk/60 mt-4 text-sm">
+                  古运河的水，映照着灯笼与手机屏幕的光
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 惠山古镇：跨两行 -->
+          <div class="md:col-span-7 perspective">
+            <div class="relative h-[400px] rotate-y-hover preserve-3d fade-in" style="transition-delay: 600ms" data-spot-id="huishanguzhen">
+              <img src="https://picsum.photos/id/1040/1000/600" alt="惠山古镇" 
+                   class="w-full h-full object-cover clip-polygon">
+              <div class="absolute inset-0 bg-gradient-to-t from-void via-void/40 to-transparent"></div>
+              <div class="absolute bottom-0 left-0 p-8">
+                <span class="text-xs text-cinnabar tracking-widest">文化根系</span>
+                <h3 class="text-2xl font-bold mt-2">惠山古镇</h3>
+                <p class="text-silk/60 mt-4">
+                  祠堂的飞檐与远处的摩天楼，在暮色中达成和解
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 解锁更多空间按钮 -->
+      <div class="mt-20 text-right">
+        <button id="unlockBtn" class="group relative overflow-hidden px-10 py-4 border border-silk/20 text-silk hover:text-void transition-all duration-700">
+          <span class="relative z-10 flex items-center">
+            <span id="btnText">解锁更多空间</span>
+            <i class="fa fa-arrow-right ml-4 transform group-hover:translate-x-2 transition-transform duration-500"></i>
+          </span>
+          <span class="absolute inset-0 bg-silk transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left"></span>
+          <!-- 加载态水墨效果（默认隐藏） -->
+          <div id="inkEffect" class="absolute inset-0 bg-azure blur-[20px] opacity-0 transition-opacity duration-1000"></div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 意境过渡区：动态水墨效果 -->
+  <section id="about" class="h-screen relative overflow-hidden flex items-center justify-center">
+    <div class="absolute inset-0 z-0">
+      <img src="https://mediabluk.cnr.cn/img/cnr/CNRCDP/2025/0329/0a8344b65169d174323510731063106810.jpg?auth=a69b39a7adbb5a576d7132acbddf757b" alt="无锡意境" 
+           class="w-full h-full object-cover object-center">
+      <div class="absolute inset-0 bg-void/70"></div>
+      
+      <!-- 动态水墨扩散效果 -->
+      <div class="absolute inset-0 z-10 opacity-30">
+        <div id="ink-splash" class="absolute w-64 h-64 rounded-full bg-azure blur-[100px] transform -translate-x-1/2 -translate-y-1/2"></div>
+      </div>
+    </div>
+    
+    <div class="relative z-20 text-center px-8 max-w-3xl">
+      <h2 class="text-[clamp(1.5rem,5vw,3rem)] font-light italic mb-8">
+        "水是眼波横，山是眉峰聚<br>
+        欲问行人去那边？眉眼盈盈处"
+      </h2>
+      <p class="text-silk/60 text-lg leading-relaxed">
+        无锡的震撼，不在宏大，而在细微处的时空褶皱——<br>
+        一杯茶里的古今，一汪水里的虚实，一眼望去的千年。
+      </p>
+    </div>
+  </section>
+
+  <!-- 水墨过渡层（默认隐藏） -->
+  <div id="transitionLayer" class="fixed inset-0 bg-gradient-to-r from-void via-azure/20 to-void z-50 hidden"></div>
+
+  <script>
+    // 水墨随鼠标移动效果
+    document.addEventListener('DOMContentLoaded', () => {
+      // 水墨随鼠标移动
+      const inkSplash = document.getElementById('ink-splash');
+      document.addEventListener('mousemove', (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+        
+        // 缓动效果
+        inkSplash.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        inkSplash.style.transform = `translate(${x - 128}px, ${y - 128}px)`;
+      });
+      
+      // 滚动显示动画
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = "1";
+            entry.target.style.transform = "translateY(0)";
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      // 观察所有景点卡片
+      document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+      });
+
+      // 解锁更多空间功能（动态加载后端数据）
+      const unlockBtn = document.getElementById('unlockBtn');
+      const btnText = document.getElementById('btnText');
+      const inkEffect = document.getElementById('inkEffect');
+      const spotsContainer = document.getElementById('spots-container');
+      const transitionLayer = document.getElementById('transitionLayer');
+      const spotsLoading = document.getElementById('spotsLoadingState');
+      const spotsError = document.getElementById('spotsErrorState');
+
+      const layoutPattern = [
+        { span: 'md:col-span-8', height: 'h-[500px]' },
+        { span: 'md:col-span-4', height: 'h-[500px]' },
+        { span: 'md:col-span-5', height: 'h-[400px]' },
+        { span: 'md:col-span-7', height: 'h-[400px]' }
+      ];
+      const colorPattern = ['azure', 'cinnabar'];
+      const batchSize = 4;
+
+      let fetchedSpots = [];
+      let renderedCount = 0;
+      let gridRoot = spotsContainer ? spotsContainer.querySelector('.grid') : null;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const explicitApiBase = normalizeBase(urlParams.get('apiBase'));
+      const apiBase = resolveApiBase();
+
+      function normalizeBase(base) {
+        if (!base) return null;
+        return base.replace(/\/+$/, '');
+      }
+
+      function resolveApiBase() {
+        if (explicitApiBase) {
+          return explicitApiBase;
+        }
+        if (window.location.origin && window.location.origin.startsWith('http')) {
+          return normalizeBase(window.location.origin) || 'http://127.0.0.1:5000';
+        }
+        return 'http://127.0.0.1:5000';
+      }
+
+      function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      function deriveLabel(spot, index) {
+        if (Array.isArray(spot.tags) && spot.tags.length) {
+          const first = String(spot.tags[0] || '').trim();
+          if (first) {
+            return first.split(/[,，]/)[0].trim();
+          }
+        }
+        return index % 2 === 0 ? '精选景点' : '城市漫游';
+      }
+
+      function clipSummary(summary, detailSections) {
+        const fallbackParagraph = Array.isArray(detailSections) && detailSections.length
+          ? (Array.isArray(detailSections[0].paragraphs) && detailSections[0].paragraphs.length
+            ? detailSections[0].paragraphs[0]
+            : '')
+          : '';
+        const text = summary || fallbackParagraph || '点击查看详情，探索空间与时间的褶皱。';
+        return text.length > 48 ? `${text.slice(0, 46)}…` : text;
+      }
+
+      function buildDetailUrl(spotId) {
+        const params = new URLSearchParams();
+        params.set('id', spotId);
+        if (explicitApiBase) {
+          params.set('apiBase', explicitApiBase);
+        }
+        return `spot-minimal-detail.html?${params.toString()}`;
+      }
+
+      function wireFallbackLinks() {
+        if (!spotsContainer || spotsContainer.dataset.fallback !== 'true') {
+          return;
+        }
+        const fallbackCards = spotsContainer.querySelectorAll('[data-spot-id]');
+        fallbackCards.forEach(card => {
+          const spotId = card.getAttribute('data-spot-id');
+          if (!spotId) {
+            return;
+          }
+          const navigate = () => {
+            window.location.href = buildDetailUrl(spotId);
+          };
+          card.addEventListener('click', navigate);
+          card.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              navigate();
+            }
+          });
+          card.classList.add('cursor-pointer');
+          card.setAttribute('role', 'link');
+          card.setAttribute('tabindex', '0');
+        });
+      }
+
+      function ensureGridRoot() {
+        if (!gridRoot) {
+          gridRoot = document.createElement('div');
+          gridRoot.className = 'grid grid-cols-1 md:grid-cols-12 gap-8';
+          spotsContainer.appendChild(gridRoot);
+        }
+        return gridRoot;
+      }
+
+      function createSpotCard(spot, index) {
+        const pattern = layoutPattern[index % layoutPattern.length];
+        const colorClass = colorPattern[index % colorPattern.length];
+
+        const column = document.createElement('div');
+        column.className = `${pattern.span} perspective`; 
+
+        const card = document.createElement('a');
+        card.href = buildDetailUrl(spot.id);
+        card.className = `relative block ${pattern.height} rotate-y-hover preserve-3d fade-in`;
+        card.style.transitionDelay = `${Math.min(index, 8) * 120}ms`;
+        card.setAttribute('aria-label', spot.name || '景点详情');
+
+        const image = document.createElement('img');
+        image.src = spot.thumbnail || spot.heroImage || `https://picsum.photos/seed/${encodeURIComponent(spot.id || 'wuxi')}/1200/800`;
+        image.alt = spot.name || '景点图像';
+        image.className = 'w-full h-full object-cover clip-polygon';
+
+        const gradient = document.createElement('div');
+        gradient.className = 'absolute inset-0 bg-gradient-to-t from-void via-void/50 to-transparent';
+
+        const info = document.createElement('div');
+        info.className = 'absolute bottom-0 left-0 p-8 space-y-3';
+
+        const badge = document.createElement('span');
+        badge.className = `text-xs text-${colorClass} tracking-widest`;
+        badge.textContent = deriveLabel(spot, index);
+
+        const title = document.createElement('h3');
+        title.className = index % 2 === 0 ? 'text-3xl md:text-4xl font-bold mt-1' : 'text-2xl md:text-3xl font-bold mt-1';
+        title.textContent = spot.name || '未命名景点';
+
+        const summary = document.createElement('p');
+        summary.className = 'text-silk/60 mt-2 text-sm md:text-base';
+        summary.textContent = clipSummary(spot.summary, spot.detailSections);
+
+        info.appendChild(badge);
+        info.appendChild(title);
+        if (spot.location) {
+          const location = document.createElement('div');
+          location.className = 'text-silk/50 text-xs md:text-sm tracking-[0.3em] uppercase';
+          location.textContent = spot.location;
+          info.appendChild(location);
+        }
+        info.appendChild(summary);
+
+        card.appendChild(image);
+        card.appendChild(gradient);
+        card.appendChild(info);
+
+        column.appendChild(card);
+        return { column, card };
+      }
+
+      function renderBatch(batch, startIndex) {
+        if (!batch.length) {
+          return;
+        }
+        const parent = ensureGridRoot();
+        batch.forEach((spot, offset) => {
+          const globalIndex = startIndex + offset;
+          const { column, card } = createSpotCard(spot, globalIndex);
+          parent.appendChild(column);
+          observer.observe(card);
+        });
+        renderedCount += batch.length;
+      }
+
+      function renderNextBatch() {
+        const next = fetchedSpots.slice(renderedCount, renderedCount + batchSize);
+        renderBatch(next, renderedCount);
+      }
+
+      function updateButtonState() {
+        const total = fetchedSpots.length;
+        const hasMore = renderedCount < total;
+        const shouldShowButton = total > batchSize;
+
+        unlockBtn.classList.toggle('hidden', !shouldShowButton);
+        if (!shouldShowButton) {
+          unlockBtn.disabled = true;
+          return;
+        }
+
+        if (!hasMore) {
+          unlockBtn.disabled = true;
+          btnText.textContent = total ? '已探索全部时空' : '暂无更多景点';
+          unlockBtn.classList.add('border-azure');
+        } else {
+          unlockBtn.disabled = false;
+          btnText.textContent = renderedCount <= batchSize ? '查看更多景点' : '解锁更多空间';
+          unlockBtn.classList.remove('border-azure');
+        }
+      }
+
+      async function handleUnlock() {
+        if (renderedCount >= fetchedSpots.length) {
+          updateButtonState();
+          return;
+        }
+
+        unlockBtn.disabled = true;
+        btnText.textContent = '正在展开时空...';
+        inkEffect.classList.add('opacity-50');
+
+        const currentCards = spotsContainer.querySelectorAll('.rotate-y-hover');
+        currentCards.forEach((card, index) => {
+          setTimeout(() => card.classList.add('shrink-animation'), index * 80);
+        });
+
+        await delay(400);
+
+        transitionLayer.classList.remove('hidden');
+        transitionLayer.classList.add('transition-wipe');
+
+        await delay(700);
+
+        renderNextBatch();
+
+        setTimeout(() => {
+          transitionLayer.classList.add('hidden');
+          transitionLayer.classList.remove('transition-wipe');
+
+          inkEffect.classList.remove('opacity-50');
+          currentCards.forEach(card => card.classList.remove('shrink-animation'));
+
+          updateButtonState();
+        }, 400);
+      }
+
+      unlockBtn.addEventListener('click', () => {
+        handleUnlock().catch(error => console.warn('Failed to unlock more spots:', error));
+      });
+
+      async function loadSpots() {
+        if (!spotsContainer) {
+          return;
+        }
+
+        try {
+          if (spotsLoading) {
+            spotsLoading.classList.remove('hidden');
+          }
+
+          const response = await fetch(`${apiBase}/api/spots`, { cache: 'no-store' });
+          if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+          }
+
+          const payload = await response.json();
+          const spots = Array.isArray(payload.spots) ? payload.spots.filter(item => item && item.id) : [];
+
+          if (!spots.length) {
+            if (spotsError) {
+              spotsError.textContent = '暂无景点数据，已展示预设内容。';
+              spotsError.classList.remove('hidden');
+            }
+            unlockBtn.classList.add('hidden');
+            return;
+          }
+
+          fetchedSpots = spots;
+          renderedCount = 0;
+
+          spotsContainer.innerHTML = '';
+          spotsContainer.dataset.fallback = 'false';
+          gridRoot = null;
+          renderNextBatch();
+          updateButtonState();
+
+          if (spotsError) {
+            spotsError.classList.add('hidden');
+            spotsError.textContent = '';
+          }
+        } catch (error) {
+          console.warn('Failed to load spots list:', error);
+          if (spotsError) {
+            spotsError.textContent = '无法加载景点数据，已展示预设内容。';
+            spotsError.classList.remove('hidden');
+          }
+          unlockBtn.classList.add('hidden');
+        } finally {
+          if (spotsLoading) {
+            spotsLoading.classList.add('hidden');
+          }
+        }
+      }
+
+      wireFallbackLinks();
+      loadSpots();
+    });
+  </script>
+</body>
+</html>

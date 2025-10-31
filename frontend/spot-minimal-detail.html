@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鼋头渚</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/css/font-awesome-awesome.min.css" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            void: '#0A0A0A',      // 深邃黑
+            silk: '#F8F5F0',      // 丝绸白
+            azure: '#165DFF',     // 琉璃蓝
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['"Noto Serif SC"', 'serif'],
+          },
+        }
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .image-fade-in {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
+        transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+      }
+      .image-visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+  </style>
+  
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.9; }
+    }
+    
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .animate-pulse-slow {
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .detail-block .image-col {
+      order: 2;
+    }
+
+    .detail-block .text-col {
+      order: 1;
+    }
+
+    @media (min-width: 1024px) {
+      .detail-block:nth-child(odd) .image-col {
+        order: 2;
+      }
+
+      .detail-block:nth-child(odd) .text-col {
+        order: 1;
+      }
+
+      .detail-block:nth-child(even) .image-col {
+        order: 1;
+      }
+
+      .detail-block:nth-child(even) .text-col {
+        order: 2;
+      }
+    }
+  </style>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&family=Noto+Serif+SC:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-void text-silk overflow-x-hidden">
+  <!-- 极简导航 -->
+  <nav class="fixed top-0 left-0 w-full z-50 px-8 py-6">
+    <a href="index.html" class="text-silk/80 hover:text-silk transition-colors duration-500 inline-flex items-center">
+      <i class="fa fa-long-arrow-left mr-2"></i>返回
+    </a>
+  </nav>
+
+  <!-- 顶部大图区域 -->
+  <header class="h-screen relative overflow-hidden">
+    <!-- 主图 -->
+    <div class="absolute inset-0 z-0">
+   <img src="https://picsum.photos/id/1037/1920/1080" alt="鼋头渚全景" 
+     data-role="hero-image"
+     data-default-src="https://picsum.photos/id/1037/1920/1080"
+     data-default-alt="鼋头渚全景"
+     class="w-full h-full object-cover object-center">
+      <div class="absolute inset-0 bg-gradient-to-t from-void via-void/40 to-void/10"></div>
+    </div>
+    
+    <!-- 动态光影效果 -->
+    <div class="absolute top-1/3 right-1/4 w-96 h-96 rounded-full bg-azure/30 blur-[180px] animate-pulse-slow z-10"></div>
+    
+    <!-- 标题信息 -->
+    <div class="relative z-20 h-full flex flex-col justify-end pb-20 px-8 md:px-24">
+      <h1 class="text-[clamp(3rem,12vw,6rem)] font-black leading-none" data-role="hero-title" data-default-title="鼋头渚">
+        鼋头渚
+      </h1>
+    </div>
+    
+    <!-- 下滚提示 -->
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 text-center">
+      <i class="fa fa-chevron-down text-silk/50 animate-bounce"></i>
+    </div>
+  </header>
+
+  <!-- 介绍与图片展示区 -->
+  <section class="py-20 relative">
+    <div class="container mx-auto px-8 md:px-24">
+      <!-- 装饰元素 -->
+      <div class="absolute top-0 right-0 w-80 h-80 border border-azure/5 transform translate-x-1/3 -translate-y-1/3 rounded-full"></div>
+      
+      <div id="spotMeta" class="hidden mb-16 space-y-6 max-w-3xl text-silk/80 leading-relaxed">
+        <div id="spotLocation" class="text-xs md:text-sm tracking-[0.4em] uppercase text-silk/60"></div>
+        <p id="spotSummary" class="text-base md:text-lg"></p>
+        <div id="spotTags" class="flex flex-wrap gap-3 text-xs uppercase tracking-[0.3em] text-silk/60"></div>
+      </div>
+
+      <div id="spotLoadingState" class="text-silk/60 text-sm tracking-[0.3em] uppercase mb-12">正在加载内容…</div>
+      <div id="spotErrorState" class="hidden text-red-300 text-sm tracking-[0.2em] uppercase mb-12"></div>
+      
+      <!-- 详细介绍区 -->
+      <div id="imageGallery" class="space-y-24">
+        <div class="detail-block grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-8">
+          <div class="text-col relative z-10">
+            <h2 class="text-[clamp(1.5rem,4vw,3rem)] font-bold mb-8">
+              樱花漫过湖面时<br>
+              <span class="text-azure">时间会慢下来</span>
+            </h2>
+            <div class="space-y-6 text-silk/80 leading-relaxed">
+              <p>
+                鼋头渚是太湖西北岸无锡境内的一个半岛，因巨石突入湖中形状酷似神龟昂首而得名。这里是观赏太湖风光的最佳去处，也是中国四大赏樱胜地之一。
+              </p>
+              <p>
+                每年三月，当早樱初绽，晚樱含苞，整个半岛便成为粉色的海洋。花瓣飘落湖面，与百年前的光影重叠，形成独特的时空褶皱。
+              </p>
+              <p>
+                从充山大门入园，可游览鹿顶迎晖、鼋渚春涛、横云山庄、广福寺等景点，乘游船至太湖仙岛，感受"欲识太湖真面目，须到鼋头渚"的意境。
+              </p>
+            </div>
+          </div>
+          
+          <div class="image-col relative perspective">
+            <div class="w-full h-[500px] relative z-10 overflow-hidden rounded-lg shadow-2xl transform hover:rotate-y-2 transition-transform duration-1000">
+              <img src="https://picsum.photos/id/1037/800/1000" alt="鼋头渚樱花" class="w-full h-full object-cover">
+            </div>
+            <!-- 装饰性元素 -->
+            <div class="absolute -bottom-6 -left-6 w-full h-full border border-azure/30 rounded-lg -z-10"></div>
+          </div>
+        </div>
+
+        <div class="detail-block grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          <div class="image-col">
+            <img src="https://picsum.photos/id/1052/800/1000" alt="鼋头渚风光" class="w-full h-auto rounded-lg shadow-xl">
+          </div>
+          
+          <div class="text-col flex flex-col justify-center">
+            <h2 class="text-[clamp(1.5rem,4vw,2.5rem)] font-bold mb-8">
+              湖光山色<span class="text-azure">之间</span>
+            </h2>
+            
+            <div class="space-y-6 text-silk/80 leading-relaxed">
+              <p>
+                鼋头渚的美，在于山水相依的自然格局。半岛三面环水，一面连山，既有山的沉稳，又有水的灵动。
+              </p>
+              <p>
+                春季樱花烂漫，夏季荷花映日，秋季天高气爽，冬季红梅傲雪。四季之景不同，而乐亦无穷也。
+              </p>
+              <p>
+                漫步于湖边栈道，远眺太湖波光粼粼，近观山岩奇秀，耳畔是风声、水声与鸟鸣交织的自然乐章。
+              </p>
+              <p>
+                登鹿顶山远眺，整个太湖风光尽收眼底，水天一色，气象万千，令人心旷神怡。
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-block grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div class="text-col flex flex-col justify-center">
+            <h2 class="text-[clamp(1.5rem,4vw,2.5rem)] font-bold mb-8">
+              光影流转<span class="text-azure">之间</span>
+            </h2>
+            <div class="space-y-6 text-silk/80 leading-relaxed">
+              <p>
+                夜幕降临，鼋头渚的灯火倒映在湖面，泛起粼粼波光。雾气沿着水面蒸腾，与山影交织，营造出一幅流动的水墨画卷。
+              </p>
+              <p>
+                乘夜航游船，耳边是悠扬的江南丝竹，脚下是柔和的灯光，仿佛穿越到旧时的水乡时光，感受太湖渔火的浪漫。
+              </p>
+              <p>
+                远处鼋渚春涛的水声依旧，映衬着岸边的古松苍柏，形成静与动的对话，向来者诉说着太湖千年的故事。
+              </p>
+            </div>
+          </div>
+          
+          <div class="image-col relative perspective">
+            <div class="w-full h-[500px] relative z-10 overflow-hidden rounded-lg shadow-2xl transform hover:-rotate-y-2 transition-transform duration-1000">
+              <img src="https://picsum.photos/id/1011/800/1000" alt="鼋头渚夜景" class="w-full h-full object-cover">
+            </div>
+            <div class="absolute -top-6 -right-6 w-full h-full border border-azure/30 rounded-lg -z-10"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- 底部水墨效果区 -->
+  <section class="h-64 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-t from-void to-transparent z-10"></div>
+    <div class="absolute inset-0 z-0">
+      <div id="bottom-ink" class="absolute w-96 h-96 rounded-full bg-azure/20 blur-[150px] animate-float"></div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const heroImage = document.querySelector('[data-role="hero-image"]');
+      const heroTitle = document.querySelector('[data-role="hero-title"]');
+      const summaryEl = document.getElementById('spotSummary');
+      const tagsEl = document.getElementById('spotTags');
+      const metaEl = document.getElementById('spotMeta');
+      const locationEl = document.getElementById('spotLocation');
+      const loadingEl = document.getElementById('spotLoadingState');
+      const errorEl = document.getElementById('spotErrorState');
+      const gallery = document.getElementById('imageGallery');
+      const initialGalleryMarkup = gallery.innerHTML;
+
+      const defaultHeroSrc = heroImage ? heroImage.dataset.defaultSrc || heroImage.src : '';
+      const defaultHeroAlt = heroImage ? heroImage.dataset.defaultAlt || heroImage.alt : '';
+      const defaultTitle = heroTitle ? heroTitle.dataset.defaultTitle || heroTitle.textContent : '';
+
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('image-visible');
+          }
+        });
+      }, { threshold: 0.2 });
+
+      const htmlEscapeMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      };
+
+      function escapeHTML(value) {
+        return value
+          ? value.replace(/[&<>"']/g, (char) => htmlEscapeMap[char])
+          : '';
+      }
+
+      function prepareBlocks(blocks) {
+        blocks.forEach(block => {
+          block.classList.add('image-fade-in');
+          revealObserver.observe(block);
+        });
+      }
+
+      function sequentialReveal(blocks, baseDelay = 500) {
+        setTimeout(() => {
+          blocks.forEach((block, index) => {
+            setTimeout(() => block.classList.add('image-visible'), index * 150);
+          });
+        }, baseDelay);
+      }
+
+      function createDetailBlock(section, index) {
+        const block = document.createElement('div');
+        block.className = 'detail-block grid grid-cols-1 lg:grid-cols-2 gap-16 items-center';
+        if (index === 0) {
+          block.classList.add('mb-8');
+        }
+
+        const textCol = document.createElement('div');
+        textCol.className = 'text-col flex flex-col justify-center';
+        if (index === 0) {
+          textCol.classList.add('relative', 'z-10');
+        }
+
+        const heading = document.createElement('h2');
+        heading.className = index === 0
+          ? 'text-[clamp(1.5rem,4vw,3rem)] font-bold mb-8'
+          : 'text-[clamp(1.5rem,4vw,2.5rem)] font-bold mb-8';
+
+        const fragments = [];
+        if (section.title) {
+          fragments.push(escapeHTML(section.title));
+        }
+        if (section.emphasis) {
+          fragments.push(`<span class="text-azure">${escapeHTML(section.emphasis)}</span>`);
+        }
+        heading.innerHTML = fragments.length
+          ? fragments.join('<br>')
+          : escapeHTML(section.title || '');
+
+        const paragraphWrapper = document.createElement('div');
+        paragraphWrapper.className = 'space-y-6 text-silk/80 leading-relaxed';
+
+        const paragraphs = Array.isArray(section.paragraphs)
+          ? section.paragraphs
+          : section.paragraphs
+            ? [section.paragraphs]
+            : [];
+
+        paragraphs.forEach(text => {
+          const para = document.createElement('p');
+          para.textContent = text;
+          paragraphWrapper.appendChild(para);
+        });
+
+        textCol.appendChild(heading);
+        if (paragraphWrapper.children.length) {
+          textCol.appendChild(paragraphWrapper);
+        }
+
+        const imageCol = document.createElement('div');
+        imageCol.className = 'image-col relative perspective';
+
+        const frame = document.createElement('div');
+        frame.className = 'w-full h-[500px] relative z-10 overflow-hidden rounded-lg shadow-2xl transform transition-transform duration-1000';
+        frame.classList.add(index % 2 === 0 ? 'hover:rotate-y-2' : 'hover:-rotate-y-2');
+
+        const img = document.createElement('img');
+        img.src = section.image || '';
+        img.alt = section.imageAlt || section.title || '';
+        img.className = 'w-full h-full object-cover';
+        frame.appendChild(img);
+        imageCol.appendChild(frame);
+
+        const accent = document.createElement('div');
+        accent.className = index % 2 === 0
+          ? 'absolute -bottom-6 -left-6 w-full h-full border border-azure/30 rounded-lg -z-10'
+          : 'absolute -top-6 -right-6 w-full h-full border border-azure/30 rounded-lg -z-10';
+        imageCol.appendChild(accent);
+
+        block.appendChild(textCol);
+        block.appendChild(imageCol);
+
+        return block;
+      }
+
+      function renderSpot(spot) {
+        if (heroImage) {
+          heroImage.src = spot.heroImage || defaultHeroSrc;
+          heroImage.alt = spot.heroImageAlt || spot.name || defaultHeroAlt;
+        }
+        if (heroTitle) {
+          heroTitle.textContent = spot.name || defaultTitle;
+        }
+
+        let hasMeta = false;
+
+        if (locationEl) {
+          if (spot.location) {
+            locationEl.textContent = spot.location;
+            locationEl.classList.remove('hidden');
+            hasMeta = true;
+          } else {
+            locationEl.textContent = '';
+            locationEl.classList.add('hidden');
+          }
+        }
+
+        if (summaryEl) {
+          if (spot.summary) {
+            summaryEl.textContent = spot.summary;
+            hasMeta = true;
+          } else {
+            summaryEl.textContent = '';
+          }
+        }
+
+        if (tagsEl) {
+          tagsEl.innerHTML = '';
+          if (Array.isArray(spot.tags) && spot.tags.length) {
+            spot.tags.forEach(tag => {
+              const chip = document.createElement('span');
+              chip.textContent = tag;
+              chip.className = 'border border-silk/20 text-silk/70 px-4 py-1 rounded-full tracking-[0.3em] text-[0.65rem] uppercase';
+              tagsEl.appendChild(chip);
+            });
+            tagsEl.classList.remove('hidden');
+            hasMeta = true;
+          } else {
+            tagsEl.classList.add('hidden');
+          }
+        }
+
+        if (metaEl) {
+          metaEl.classList.toggle('hidden', !hasMeta);
+        }
+
+        if (Array.isArray(spot.detailSections) && spot.detailSections.length) {
+          gallery.innerHTML = '';
+          const blocks = spot.detailSections.map((section, index) => createDetailBlock(section, index));
+          blocks.forEach(block => gallery.appendChild(block));
+          prepareBlocks(blocks);
+          sequentialReveal(blocks, 350);
+        } else {
+          gallery.innerHTML = initialGalleryMarkup;
+          const fallbackBlocks = Array.from(gallery.querySelectorAll(':scope > div'));
+          prepareBlocks(fallbackBlocks);
+          sequentialReveal(fallbackBlocks, 350);
+        }
+      }
+
+      function normalizeBase(base) {
+        if (!base) return null;
+        return base.replace(/\/+$/, '');
+      }
+
+      function resolveApiBase() {
+        const params = new URLSearchParams(window.location.search);
+        const explicit = normalizeBase(params.get('apiBase'));
+        if (explicit) {
+          return explicit;
+        }
+        if (window.location.origin && window.location.origin.startsWith('http')) {
+          return normalizeBase(window.location.origin) || 'http://127.0.0.1:5000';
+        }
+        return 'http://127.0.0.1:5000';
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const spotId = (params.get('id') || 'yuantouzhu').trim();
+      const apiBase = resolveApiBase();
+      const endpoint = `${apiBase}/api/spots/${encodeURIComponent(spotId)}`;
+
+      const initialBlocks = Array.from(gallery.querySelectorAll(':scope > div'));
+      prepareBlocks(initialBlocks);
+      sequentialReveal(initialBlocks, 500);
+
+      if (loadingEl) {
+        loadingEl.classList.remove('hidden');
+      }
+
+      fetch(endpoint, { cache: 'no-store' })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          renderSpot(data);
+          if (loadingEl) {
+            loadingEl.classList.add('hidden');
+          }
+          if (errorEl) {
+            errorEl.classList.add('hidden');
+          }
+        })
+        .catch(error => {
+          console.warn('Failed to load spot data:', error);
+          if (loadingEl) {
+            loadingEl.textContent = '加载失败，已显示预设内容。';
+          }
+          if (errorEl) {
+            errorEl.textContent = '无法从后端加载景点信息，请稍后重试。';
+            errorEl.classList.remove('hidden');
+          }
+        });
+
+      // 底部水墨动画
+      const bottomInk = document.getElementById('bottom-ink');
+      let posX = 50;
+      let posY = 50;
+      let dirX = 0.05;
+      let dirY = 0.03;
+
+      function animateInk() {
+        posX += dirX;
+        posY += dirY;
+
+        if (posX > 80 || posX < 20) dirX = -dirX;
+        if (posY > 80 || posY < 20) dirY = -dirY;
+
+        if (bottomInk) {
+          bottomInk.style.left = `${posX}%`;
+          bottomInk.style.top = `${posY}%`;
+        }
+        requestAnimationFrame(animateInk);
+      }
+
+      animateInk();
+
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', (event) => {
+          event.preventDefault();
+          const target = document.querySelector(anchor.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h1>为「{{ spot.name }}」新增详情段落</h1>
+<p class="muted">根据前端布局，每个段落可包含标题、副标题强调、若干段文字以及一张配图。</p>
+
+{% if context.submitted %}
+  <div class="success">新增成功！你可以继续添加更多段落，或返回 <a class="link-btn" href="{{ url_for('admin_create_spot') }}">景点列表</a>。</div>
+{% endif %}
+
+{% if context.errors %}
+  <div class="errors">
+    <strong>提交失败：</strong>
+    <ul>
+      {% for error in context.errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+<form method="post">
+  <div>
+    <label for="title">主标题*</label>
+    <input id="title" name="title" type="text" placeholder="樱花漫过湖面时" value="{{ context.prefill.title or '' }}" required>
+  </div>
+
+  <div>
+    <label for="emphasis">强调词（可选）</label>
+    <input id="emphasis" name="emphasis" type="text" placeholder="时间会慢下来" value="{{ context.prefill.emphasis or '' }}">
+    <p class="muted">会出现在标题中的强调样式，例如前端使用 `<span class="text-azure">`。</p>
+  </div>
+
+  <div>
+    <label for="paragraphs">正文段落*</label>
+    <textarea id="paragraphs" name="paragraphs" placeholder="一行代表一个段落，空行会被忽略" required>{{ context.prefill.paragraphs or '' }}</textarea>
+  </div>
+
+  <div>
+    <label for="image">配图 URL*</label>
+    <input id="image" name="image" type="text" placeholder="https://example.com/detail.jpg" value="{{ context.prefill.image or '' }}" required>
+  </div>
+
+  <div>
+    <label for="imageAlt">图片描述</label>
+    <input id="imageAlt" name="imageAlt" type="text" placeholder="用于提升无障碍与 SEO" value="{{ context.prefill.imageAlt or '' }}">
+  </div>
+
+  <div class="actions">
+    <button type="submit">保存段落</button>
+    <a class="link-btn" href="{{ url_for('admin_create_spot') }}">返回景点管理</a>
+  </div>
+</form>
+
+{% if spot.detailSections %}
+  <div class="list">
+    <h2>已添加的段落</h2>
+    {% for section in spot.detailSections %}
+      <div class="list-item">
+        <div>
+          <strong>{{ loop.index }}. {{ section.title }}</strong>
+          {% if section.image %}
+            <div class="muted">图片：{{ section.image }}</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

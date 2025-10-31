@@ -1,0 +1,76 @@
+{% extends "admin/base.html" %}
+{% block content %}
+<h1>创建新景点</h1>
+<p class="muted">填写基础信息后保存，系统会自动跳转到详情内容录入页。</p>
+
+{% if context.errors %}
+  <div class="errors">
+    <strong>提交失败：</strong>
+    <ul>
+      {% for error in context.errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+<form method="post">
+  <div>
+    <label for="id">景点 ID（英文/拼音，作为唯一标识）*</label>
+    <input id="id" name="id" type="text" placeholder="例如：yuantouzhu" value="{{ context.prefill.id or '' }}" required>
+    <p class="muted">建议使用英文或拼音短名，后续访问详情页时也会用到。</p>
+  </div>
+
+  <div>
+    <label for="name">景点名称*</label>
+    <input id="name" name="name" type="text" placeholder="鼋头渚" value="{{ context.prefill.name or '' }}" required>
+  </div>
+
+  <div>
+    <label for="location">地理位置</label>
+    <input id="location" name="location" type="text" placeholder="无锡 · 太湖" value="{{ context.prefill.location or '' }}">
+  </div>
+
+  <div>
+    <label for="summary">一句话摘要</label>
+    <textarea id="summary" name="summary" placeholder="用于列表或卡片的简介文本" rows="3">{{ context.prefill.summary or '' }}</textarea>
+  </div>
+
+  <div>
+    <label for="heroImage">顶部大图 URL</label>
+    <input id="heroImage" name="heroImage" type="text" placeholder="https://example.com/hero.jpg" value="{{ context.prefill.heroImage or '' }}">
+    <p class="muted">对应前端头图区域 `header` 背景图。</p>
+  </div>
+
+  <div>
+    <label for="thumbnail">缩略图 URL</label>
+    <input id="thumbnail" name="thumbnail" type="text" placeholder="https://example.com/thumb.jpg" value="{{ context.prefill.thumbnail or '' }}">
+    <p class="muted">可用于首页或列表展示的小图。</p>
+  </div>
+
+  <div>
+    <label for="tags">标签（逗号分隔）</label>
+    <input id="tags" name="tags" type="text" placeholder="赏樱, 太湖, 园林" value="{{ context.prefill.tags | join(', ') if context.prefill.tags else '' }}">
+  </div>
+
+  <div class="actions">
+    <button type="submit">保存并添加详情</button>
+    <a class="link-btn" href="{{ url_for('admin_create_detail', spot_id=context.prefill.id) if context.prefill.id else '#' }}">已有景点？继续添加详情</a>
+  </div>
+</form>
+
+{% if spots %}
+  <div class="list">
+    <h2>已存在的景点</h2>
+    {% for item in spots %}
+      <div class="list-item">
+        <div>
+          <strong>{{ item.name }}</strong>
+          <div class="muted">ID：{{ item.id }}{% if item.location %} · {{ item.location }}{% endif %}</div>
+        </div>
+        <a class="link-btn" href="{{ url_for('admin_create_detail', spot_id=item.id) }}">添加详情</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

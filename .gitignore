@@ -1,0 +1,24 @@
+# Python virtual environments
+backend/.venv/
+
+# Python bytecode caches
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Log and temporary files
+*.log
+*.tmp
+*.bak
+
+# Environment variables files
+*.env
+
+# Frontend dependencies
+frontend/node_modules/
+frontend/package-lock.json
+frontend/yarn.lock
+
+# Editor settings
+.vscode/
+.idea/
